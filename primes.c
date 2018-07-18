@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #define BLKSIZE 10
-#define PRM_SZ_INC 100
+#define PRM_SZ_INC 2
 
 struct p {
     int *primes;	/* all primes found */
@@ -15,7 +15,21 @@ struct p {
 
 static void eliminate_prime_mults(struct p *ps, int pm)
 {
+    printf("eliminating multiples of %d in block starting at %d and ending with %d\n",
+	    pm, ps->blkstart, ps->blkstart + BLKSIZE);
 
+}
+
+static void add_prime(struct p *ps, int pm)
+{
+    printf("adding prime %d to primes\n", pm);
+    if (ps->nr_primes >= ps->sz_primes) {
+	printf("reallocing primes\n");
+	ps->sz_primes += PRM_SZ_INC;
+	ps->primes = realloc(ps->primes,  ps->sz_primes * sizeof(*ps->primes));
+    }
+    primes[nr_primes++] = pm;
+    
 }
 
 static void blkinit(struct p *ps)
@@ -38,8 +52,8 @@ static struct p *pinit(void)
 
     /* ignore that calloc zero'd out stuff */
 
-    ps->primes = calloc(PRM_SZ_INC, sizeof(*ps->primes));
     ps->sz_primes = PRM_SZ_INC;
+    ps->primes = calloc(ps->sz_primes, sizeof(*ps->primes));
 
     ps->nr_primes = 0;
     ps->max_prime = 0;
